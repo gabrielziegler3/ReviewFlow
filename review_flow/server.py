@@ -1,35 +1,44 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, HTTPException
+from sqlalchemy.orm import Session
+from review_flow.db.database import get_database_session
+from review_flow.schemas.review_schema import ReviewCreate, ReviewResponse
+from review_flow.services.review_service import ReviewService
+from review_flow.src.logger import get_logger
 
 
 app = FastAPI()
+logger = get_logger(__name__)
 
 
-@app.get("/")
-def read_root():
-    return {"message": "Welcome to ReviewFlow API"}
+@app.post("/reviews", response_model=ReviewResponse)
+def create_review(review: ReviewCreate, db: Session = Depends(get_database_session)):
+    logger.info("Creating a new review")
+    return ReviewService.create_review(db, review)
 
 
-# Placeholder for review routes
-@app.post("/reviews")
-def create_review():
-    return {"message": "Review created"}
+@app.get("/reviews", response_model=list[ReviewResponse])
+def get_reviews(db: Session = Depends(get_database_session)):
+    logger.info("Fetching all reviews")
+    return ReviewService.get_reviews(db)
 
 
-@app.get("/reviews/{movie_id}")
-def get_reviews(movie_id: int):
-    return {"message": f"Fetching reviews for movie {movie_id}"}
+@app.get("/reviews/{review_id}", response_model=ReviewResponse)
+def get_review(review_id: int, db: Session = Depends(get_database_session)):
+    logger.info(f"Fetching review with ID {review_id}")
+    review = ReviewService.get_review_by_id(db, review_id)
 
+    if not review:
+        raise HTTPException(status_code=404, detail="Review not found")
 
-@app.put("/reviews/{review_id}")
-def update_review(review_id: int):
-    return {"message": f"Review {review_id} updated"}
+    return review
 
 
 @app.delete("/reviews/{review_id}")
-def delete_review(review_id: int):
-    return {"message": f"Review {review_id} deleted"}
+def delete_review(review_id: int, db: Session = Depends(get_database_session)):
+    logger.info(f"Deleting review with ID {review_id}")
+    review = ReviewService.delete_review(db, review_id)
 
+    if not review:
+        raise HTTPException(status_code=404, detail="Review not found")
 
-@app.post("/analyze")
-def analyze_review():
-    return {"message": "Sentiment analysis result"}
+    return {"message": "Review deleted successfully"}
