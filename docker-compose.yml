@@ -1,0 +1,32 @@
+services:
+  db:
+    image: postgres:16
+    container_name: reviewflow_db
+    restart: always
+    environment:
+      # In production, move these to an env file and use a secrets manager
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: reviewflow
+    ports:
+      - "4321:4321"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build: .
+    container_name: reviewflow_api
+    restart: always
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://user:password@db/reviewflow
+      LOGGER_LEVEL: DEBUG
+    ports:
+      - "7000:7000"
+    volumes:
+      - .:/app
+
+volumes:
+  postgres_data:
+
