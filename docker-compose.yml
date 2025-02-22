@@ -21,6 +21,7 @@ services:
       - db
     environment:
       DATABASE_URL: postgresql://user:password@db/reviewflow
+      LOGGER_LEVEL: DEBUG
     ports:
       - "7000:7000"
     volumes:

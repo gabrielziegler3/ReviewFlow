@@ -6,5 +6,7 @@ COPY . .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-CMD ["bash", "-c", "uvicorn review_flow.server:app --host 0.0.0.0 --port 7000"]
+ENV PYTHONPATH="/app"
+
+CMD ["bash", "-c", "python review_flow/db/seed.py && uvicorn review_flow.server:app --host 0.0.0.0 --port 7000"]
 

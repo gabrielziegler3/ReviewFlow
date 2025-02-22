@@ -1,6 +1,6 @@
 import csv
 
-from review_flow.db.database import database
+from review_flow.db.database import get_database_session
 from review_flow.db.models import Review
 from review_flow.src.constants import DATASET_FILEPATH
 from review_flow.src.logger import get_logger
@@ -13,9 +13,13 @@ def populate_db():
     """
     Populate table `Review` with data from the dataset file.
     """
-    logger.info(f"Populating database with data from dataset file: {DATASET_FILEPATH}")
-    db = next(database.get_db())
+    db = get_database_session()
 
+    if db.query(Review).first() is not None:
+        logger.info("Table 'Review' is already populated")
+        return
+
+    logger.info(f"Populating database with data from dataset file: {DATASET_FILEPATH}")
     try:
         with open(DATASET_FILEPATH, encoding="utf-8") as csv_file:
             reader = csv.reader(csv_file)
