@@ -1,12 +1,10 @@
-version: '3.8'
-
 services:
   db:
-    image: postgres:15
+    image: postgres:16
     container_name: reviewflow_db
     restart: always
     environment:
-      # In prod, move this to an env file and use a manager like 1password
+      # In production, move these to an env file and use a secrets manager
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
       POSTGRES_DB: reviewflow
@@ -26,7 +24,8 @@ services:
     ports:
       - "7000:7000"
     volumes:
-      - review_flow:/app
+      - .:/app
 
 volumes:
   postgres_data:
+
