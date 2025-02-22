@@ -5,11 +5,12 @@ ReviewFlow is a **FastAPI-based microservice** designed to collect and analyze m
 It provides **CRUD operations** for storing and retrieving reviews, along with a **sentiment analysis endpoint (pending implementation)**.
 
 The service is built using:
-✅ **FastAPI** – High-performance web framework
-✅ **PostgreSQL** – Database for storing reviews
-✅ **SQLAlchemy** – ORM for database interactions
-✅ **Docker** – Containerized deployment
-✅ **PyTorch (Planned)** – Fine-tuning DistilBERT for sentiment analysis
+
+✅ **FastAPI** – High-performance web framework  
+✅ **PostgreSQL** – Database for storing reviews  
+✅ **SQLAlchemy** – ORM for database interactions  
+✅ **Docker** – Containerized deployment  
+✅ **PyTorch (Planned)** – Fine-tuning DistilBERT for sentiment analysis  
 
 ---
 
