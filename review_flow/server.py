@@ -1,13 +1,29 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from review_flow.db.database import get_database_session
 from review_flow.schemas.review_schema import ReviewCreate, ReviewResponse
+from review_flow.schemas.review_sentiment_analyzer_service import (
+    SentimentRequest,
+    SentimentResponse,
+)
 from review_flow.services.review_service import ReviewService
+from review_flow.services.review_sentiment_analyzer_service import (
+    ReviewSentimentAnalyzerService,
+)
 from review_flow.src.logger import get_logger
 
 
-app = FastAPI()
-logger = get_logger(__name__)
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    global sentiment_service
+    sentiment_service = ReviewSentimentAnalyzerService()
+    yield
+    sentiment_service.clear()
+
+
+app = FastAPI(lifespan=lifespan)
+logger = get_logger(__file__)
 
 
 @app.post("/reviews", response_model=ReviewResponse)
@@ -42,3 +58,12 @@ def delete_review(review_id: int, db: Session = Depends(get_database_session)):
         raise HTTPException(status_code=404, detail="Review not found")
 
     return {"message": "Review deleted successfully"}
+
+
+@app.post("/analyze", response_model=SentimentResponse)
+def analyze_sentiment(request: SentimentRequest):
+    """
+    Runs sentiment analysis on the given review text.
+    """
+    sentiment, confidence = sentiment_service.predict(request.text)
+    return SentimentResponse(sentiment=sentiment, confidence=confidence)
