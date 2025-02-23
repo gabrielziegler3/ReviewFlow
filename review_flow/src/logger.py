@@ -1,6 +1,7 @@
 import logging
 import os
 
+
 class LogHandler(logging.StreamHandler):
     def __init__(self):
         super().__init__()
@@ -8,6 +9,7 @@ class LogHandler(logging.StreamHandler):
         fmt_date = "%Y-%m-%d %H:%M:%S"
         formatter = logging.Formatter(fmt, fmt_date)
         self.setFormatter(formatter)
+
 
 def get_logger(name: str) -> logging.Logger:
     log_level = os.getenv("LOG_LEVEL", "DEBUG")
@@ -21,4 +23,3 @@ def get_logger(name: str) -> logging.Logger:
         logger.addHandler(handler)
 
     return logger
-

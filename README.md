@@ -108,3 +108,20 @@ curl -X DELETE "http://localhost:7000/reviews/1"
 
 ---
 
+### **5️⃣ UAnalyze the Sentiment of a Review **
+
+```sh
+❯ curl -X 'POST' \                                                                                                                        ─╯
+  'http://localhost:7000/analyze' \
+  -H 'Content-Type: application/json' \
+  -d '{"text": "I absolutely loved this movie! The story was fantastic."}'
+```
+
+**Response:**
+
+```json
+{
+    {"sentiment":"positive","confidence":0.9982852339744568}%
+}
+```
+
