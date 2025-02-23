@@ -109,7 +109,7 @@ curl -X DELETE "http://localhost:7000/reviews/1"
 
 ---
 
-### **5️⃣ UAnalyze the Sentiment of a Review **
+### **5️⃣ Analyze the Sentiment of a Review**
 
 ```sh
 ❯ curl -X 'POST' \                                                                                                                        ─╯
