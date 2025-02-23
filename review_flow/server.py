@@ -3,7 +3,7 @@ from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from review_flow.db.database import get_database_session
 from review_flow.schemas.review_schema import ReviewCreate, ReviewResponse
-from review_flow.schemas.review_sentiment_analyzer_service import (
+from review_flow.schemas.review_sentiment_analyzer_schema import (
     SentimentRequest,
     SentimentResponse,
 )
@@ -65,5 +65,9 @@ def analyze_sentiment(request: SentimentRequest):
     """
     Runs sentiment analysis on the given review text.
     """
-    sentiment, confidence = sentiment_service.predict(request.text)
+    try:
+        sentiment, confidence = sentiment_service.predict(request.text)
+    except Exception as e:
+        logger.error(f"Failed to analyze sentiment: {e}")
+        raise HTTPException(status_code=500, detail="Failed to analyze sentiment")
     return SentimentResponse(sentiment=sentiment, confidence=confidence)
