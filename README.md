@@ -6,11 +6,11 @@ It provides **CRUD operations** for storing and retrieving reviews, along with a
 
 The service is built using:
 
-✅ **FastAPI** – High-performance web framework
-✅ **PostgreSQL** – Database for storing reviews
-✅ **SQLAlchemy** – ORM for database interactions
-✅ **Docker** – Containerized deployment
-✅ **PyTorch** – Fine-tuning DistilBERT for sentiment analysis
+✅ **FastAPI** – High-performance web framework  
+✅ **PostgreSQL** – Database for storing reviews  
+✅ **SQLAlchemy** – ORM for database interactions  
+✅ **Docker** – Containerized deployment  
+✅ **PyTorch** – Fine-tuning DistilBERT for sentiment analysis  
 
 ---
 
