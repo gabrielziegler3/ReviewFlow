@@ -6,11 +6,11 @@ It provides **CRUD operations** for storing and retrieving reviews, along with a
 
 The service is built using:
 
-✅ **FastAPI** – High-performance web framework
-✅ **PostgreSQL** – Database for storing reviews
-✅ **SQLAlchemy** – ORM for database interactions
-✅ **Docker** – Containerized deployment
-✅ **PyTorch** – Fine-tuning DistilBERT for sentiment analysis
+✅ **FastAPI** – High-performance web framework  
+✅ **PostgreSQL** – Database for storing reviews  
+✅ **SQLAlchemy** – ORM for database interactions  
+✅ **Docker** – Containerized deployment  
+✅ **PyTorch** – Fine-tuning DistilBERT for sentiment analysis  
 
 ---
 
@@ -41,8 +41,7 @@ docker compose logs -f api
 
 ## Download dataset from Kaggle
 
-[IMDB Dataset of 50K Movie Reviews]
-(https://www.kaggle.com/datasets/lakshmi25npathi/imdb-dataset-of-50k-movie-reviews)
+[IMDB Dataset of 50K Movie Reviews](https://www.kaggle.com/datasets/lakshmi25npathi/imdb-dataset-of-50k-movie-reviews)
 
 ## Download the fine-tuned model
 
