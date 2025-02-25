@@ -1,6 +1,7 @@
 import torch
 import torch.nn.functional as F
 
+from tqdm import tqdm
 from review_flow.src.logger import get_logger
 from transformers import DistilBertForSequenceClassification, DistilBertTokenizerFast
 from review_flow.src.constants import REVIEW_SENTIMENT_ANALYZER_MODEL_PATH
@@ -43,30 +44,46 @@ class ReviewSentimentAnalyzerService:
         self.label_map = {0: "negative", 1: "positive"}
         logger.info("SentimentAnalyzer initialized successfully")
 
-    def predict(self, text: str) -> tuple[str, float]:
+    def predict(
+        self, texts: list[str], batch_size: int = 32
+    ) -> list[tuple[str, float]]:
         """
-        Predicts the sentiment of the given text.
+        Predicts sentiment for a batch of texts in smaller chunks to prevent memory overflow.
 
         Args:
-            text (str): The input text for sentiment analysis.
+            texts (list[str]): List of input texts for sentiment analysis.
+            batch_size (int): Number of texts to process at a time.
 
         Returns:
-            tuple[str, float]: The predicted sentiment label ("positive" or "negative")
-                               and the confidence score.
+            list[tuple[str, float]]: A list of tuples containing the predicted sentiment
+                                     ("positive" or "negative") and confidence score.
         """
-        # Tokenize input text
-        inputs = self.tokenizer(
-            text, truncation=True, padding=True, return_tensors="pt"
-        ).to(self.device)
+        results = []
+        num_samples = len(texts)
 
-        # Perform inference
-        with torch.no_grad():
-            logits = self.model(**inputs).logits
+        for i in tqdm(
+            range(0, num_samples, batch_size), desc="Processing batches", unit="batch"
+        ):
+            batch_texts = texts[i : i + batch_size]
 
-        # Convert logits to probabilities
-        probs = F.softmax(logits, dim=-1)
-        confidence, predicted_class = torch.max(probs, dim=-1)
-        return self.label_map[predicted_class.item()], confidence.item()
+            inputs = self.tokenizer(
+                batch_texts, truncation=True, padding=True, return_tensors="pt"
+            ).to(self.device)
+
+            # Perform inference
+            with torch.no_grad():
+                logits = self.model(**inputs).logits
+
+            probs = F.softmax(logits, dim=-1)
+            confidence, predicted_classes = torch.max(probs, dim=-1)
+
+            batch_results = [
+                (self.label_map[predicted_classes[j].item()], confidence[j].item())
+                for j in range(len(batch_texts))
+            ]
+            results.extend(batch_results)
+
+        return results
 
     def clear(self) -> None:
         """

@@ -60,14 +60,17 @@ def delete_review(review_id: int, db: Session = Depends(get_database_session)):
     return {"message": "Review deleted successfully"}
 
 
-@app.post("/analyze", response_model=SentimentResponse)
+@app.post("/analyze", response_model=list[SentimentResponse])
 def analyze_sentiment(request: SentimentRequest):
     """
     Runs sentiment analysis on the given review text.
     """
     try:
-        sentiment, confidence = sentiment_service.predict(request.text)
+        predictions = sentiment_service.predict(request.texts)
     except Exception as e:
-        logger.error(f"Failed to analyze sentiment: {e}")
+        logger.error(f"Failed to analyze sentiment: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail="Failed to analyze sentiment")
-    return SentimentResponse(sentiment=sentiment, confidence=confidence)
+    return [
+        SentimentResponse(sentiment=sentiment, confidence=confidence)
+        for sentiment, confidence in predictions
+    ]

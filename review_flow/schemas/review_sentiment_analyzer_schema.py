@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 
 class SentimentRequest(BaseModel):
-    text: str
+    texts: list[str]
 
 
 class SentimentResponse(BaseModel):
