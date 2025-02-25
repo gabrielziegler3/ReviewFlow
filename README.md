@@ -149,3 +149,37 @@ curl -X POST "http://localhost:7000/analyze" \
 ]
 ```
 
+### Future Improvements
+
+
+# 1️⃣ Backend & API Improvements
+
+- Tests: as the project grows, unit tests and integration tests would be crucial to ensure the reliability of the service.
+- Pagination: as the database grows, pagination would be necessary to limit the number of reviews returned in a single request.
+- Rate Limiting & Authentication: Secure API access and prevent abuse/DDoS attacks.
+- Database Migrations: use a tool like `Alembic` to manage database schema changes.
+
+# 2️⃣ Sentiment Analysis Improvements
+
+- Support More Sentiment Classes: Expand beyond positive/negative to include neutral.
+- Incorporate other datasets and sources. Twitter, Reddit, etc.
+- Deploy model as a separate service for scalability. This way, the API can scale independently of the sentiment analysis service.
+- Optimize inference speed: convert model to ONNX format and use quantization for faster CPU predictions.
+
+# 3️⃣ Deployment & Scalability
+
+- CI/CD Pipeline: automate testing and deployment using GitHub Actions. Here we could test the docker build, unit tests, and deploy to a staging environment.
+- Deploy to cloud:
+Here, we'd need to specify further the requirements for the application.
+If we wanted this service to have a fast response time, we could have something similar to:
+    - API Gateway: to manage the API requests and route them to the appropriate service.
+    - Load Balancer: to distribute the incoming traffic across multiple instances of the service.
+    - Auto-Scaling: to automatically adjust the servers serving the model based on the incoming traffic.
+    - Caching: cache most frequent requests to reduce the load on the database, if this is something that can be seen in the distribution of the requests.
+
+If instead, this could be an asynchronous operation that processes batches of reviews, we could have something similar to:
+    - Message Queue: to manage the requests and responses to the service.
+    - Worker Service: to process the requests in the queue.
+
+- Monitoring: to monitor the performance of the service and the infrastructure.
+- Monitoring: monitor drifts in the requests and responses to the model trying to detect if the model is degrading in performance.
